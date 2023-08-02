@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Server Login</title>
+    <style>
+        .input-group label { width: 200px; display: inline-block;}
+    </style>
+</head>
+<body>
+    {% if user and user.id %}
+        <span class="user-name">Hello {{user.nick}}</span>
+        <a href="/auth/logout">
+            <button>Logout</button>
+        </a>
+        <fieldset>
+            <legend>Domain Register</legend>
+            <form action="/domain" method="post">
+                <div>
+                    <label for="type-free">Free</label>
+                    <input type="radio" id="type-free" name="type" value="free">
+                    <label for="type-premium">Premium</label>
+                    <input type="radio" id="type-premium" name="type" value="Premium">
+                </div>
+                <div>
+                    <label for="host">Domain</label>
+                    <input type="text" id="host" name="host" placeholder="ex. dthcs.com">
+                </div>
+                <button>Save</button>
+            </form>
+        </fieldset>
+        <table>
+            <tr>
+                <th>Domain Address</th>
+                <th>Type</th>
+                <th>Client password key</th>
+            </tr>
+            {% for domain in domains %}
+            <tr>
+                <td>{{domain.host}}</td>
+                <td>{{domain.type}}</td>
+                <td>{{domain.clientSecret}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <form action="/auth/login" id="login-form" method="post">
+            <h2>Login with SNS Account</h2>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input id="email" type="email" name="email" required autofocus>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" required>
+            </div>
+            <div>Register account at localhost:8001</div>
+            <button id="login"  type="submit">Login</button>
+        </form>
+        <script>
+            window.onload = () => {
+                if(new URL(location.href).searchParams.get('loginError')){
+                    alert(new URL(location.href).searchParams.get('loginError'));
+                }
+            };
+        </script>
+    {% endif %}
+</body>
+</html>
